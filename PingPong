@@ -1,0 +1,118 @@
+import turtle
+import keyboard
+window = turtle.Screen()
+window.title("Ping Pong")
+window.bgcolor("black")
+window.setup(width=800, height = 600)
+window.tracer(0)
+
+#Paddle Left
+
+Paddle_L = turtle.Turtle() #creates turtle
+Paddle_L.speed(0) #gives highest speed
+Paddle_L.shape("square")
+Paddle_L.color("blue")
+Paddle_L.penup()
+Paddle_L.goto(-350,0)
+Paddle_L.shapesize(stretch_wid = 5, stretch_len = 1)
+
+#Paddle Right
+
+Paddle_R = turtle.Turtle() #creates turtle
+Paddle_R.speed(0) #gives highest speed
+Paddle_R.shape("square")
+Paddle_R.color("red")
+Paddle_R.penup()
+Paddle_R.goto(350,0)
+Paddle_R.shapesize(stretch_wid = 5, stretch_len = 1)
+
+#The ball
+
+ball = turtle.Turtle() #creates turtle
+ball.speed(0) #gives highest speed
+ball.shape("square")
+ball.color("white")
+ball.penup()
+ball.dx = 0.07
+ball.dy = -0.07
+
+#score
+score_a = 0
+score_b = 0
+
+# Pen
+pen = turtle.Turtle()
+pen.speed(0) #max speed when 0
+pen.color("white")
+pen.penup()
+pen.hideturtle()
+pen.goto(0,260)
+pen.write("Player A: 0, Player B: 0", align = "center", font=("courier", 24,"normal")) #puts score on top
+
+#Moving paddles (left)
+def Paddle_L_Up():
+    y = Paddle_L.ycor() #extracts current y-coordinate
+    y = y + 20 #moves the y coordinate paddle up
+    Paddle_L.sety(y) #sets the y-coordinate
+
+def Paddle_L_Down():
+    y = Paddle_L.ycor() #extracts current y-coordinate
+    y = y - 20 #moves the y coordinate paddle up
+    Paddle_L.sety(y) #sets the y-coordinate
+
+#Moving paddles (right)
+def Paddle_R_Up():
+    y = Paddle_R.ycor() #extracts current y-coordinate
+    y = y + 20 #moves the y coordinate paddle up
+    Paddle_R.sety(y) #sets the y-coordinate
+
+def Paddle_R_Down():
+    y = Paddle_R.ycor() #extracts current y-coordinate
+    y = y - 20 #moves the y coordinate paddle up
+    Paddle_R.sety(y) #sets the y-coordinate
+
+#Keyboard Binding #press w to listen for keys pressed
+window.listen() #listens for inputs
+window.onkeypress(Paddle_L_Up, "w") #when second argument key pressed, first function
+#is run
+
+window.onkeypress(Paddle_L_Down,"s") #when pressing s the paddle moves down
+
+window.onkeypress(Paddle_R_Up, "Up") #when second argument key pressed, first function
+#is run
+
+window.onkeypress(Paddle_R_Down,"Down") #when pressing s the paddle moves down
+
+while True:
+    window.update()
+    newx = ball.xcor() + ball.dx #add dx to current coordinate of ball
+    newy = ball.ycor() + ball.dy
+    ball.setx(newx) #sets new coordinates for ball
+    ball.sety(newy)
+    # border check
+    #compare coordinates of ball and border so it does not go past it
+    if ball.ycor() > 290:
+        ball.sety(290)
+        ball.dy = ball.dy * -1 #reverses sign to move ball down diagonally instead
+    elif ball.ycor() < -290:
+        ball.sety(-290)
+        ball.dy = ball.dy * -1
+    if ball.xcor() > 390:
+        score_a += 1
+        pen.clear()
+        pen.write("Player A: {}, Player B: {}".format(score_a,score_b), align = "center", font=("courier", 24,"normal")) #puts score on top
+
+        ball.goto(0,0)
+        ball.dx = ball.dx * -1
+    elif ball.xcor() < -390:
+        score_b +=1
+        pen.clear()
+        pen.write("Player A: {}, Player B: {}".format(score_a,score_b), align = "center", font=("courier", 24,"normal")) #puts score on top
+        ball.goto(0,0)
+        ball.dx = ball.dx * -1
+    #makes ball bounce back when collision happens
+    if (-350 < ball.xcor() < -340) and ball.ycor() < Paddle_L.ycor() + 50 and ball.ycor() > Paddle_L.ycor() -50:
+        ball.dx = ball.dx*-1
+    if (350 > ball.xcor() > 340) and ball.ycor() < Paddle_R.ycor() + 50 and ball.ycor() > Paddle_R.ycor() -50:
+        ball.dx = ball.dx*-1
+
